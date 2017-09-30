@@ -237,7 +237,7 @@ public class LineController {
 
         log.info("Got text message from {}: {}", replyToken, text);
 
-        this.replyText(replyToken, text);
+//        this.replyText(replyToken, text);
 
         List<com.timx.reminderbot.Event> evt = eventRepository.findAll();
         List<CarouselColumn> carouselList = new ArrayList<>();
@@ -249,6 +249,8 @@ public class LineController {
             ));
             carouselList.add(c);
         }
+        
+        log.info("carouselList size: ", carouselList.size());
 
         String imageUrl = createUri("/static/buttons/1040.jpg");
         CarouselTemplate carouselTemplate = new CarouselTemplate(carouselList);
