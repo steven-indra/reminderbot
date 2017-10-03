@@ -1,5 +1,5 @@
 
-package com.timx.reminderbot.models;
+package com.timx.reminderbot.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,14 +9,14 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "date",
-    "holiday"
+    "confidence",
+    "value"
 })
-public class Parameters {
+public class Intent {
 
-    @JsonProperty("date")
-    public String date;
-    @JsonProperty("holiday")
-    public String holiday;
+    @JsonProperty("confidence")
+    private Long confidence;
+    @JsonProperty("value")
+    private String value;
 
 }

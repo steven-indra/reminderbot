@@ -1,5 +1,5 @@
 
-package com.timx.reminderbot.models;
+package com.timx.reminderbot.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -9,17 +9,17 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "type",
-    "id",
-    "speech"
+    "value",
+    "grain",
+    "type"
 })
-public class Message {
+public class Value {
 
+    @JsonProperty("value")
+    private String value;
+    @JsonProperty("grain")
+    private String grain;
     @JsonProperty("type")
-    public long type;
-    @JsonProperty("id")
-    public String id;
-    @JsonProperty("speech")
-    public String speech;
+    private String type;
 
 }
