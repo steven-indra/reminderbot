@@ -274,6 +274,7 @@ public class LineController {
 
     @RequestMapping(value = "/view", method = RequestMethod.GET)
     public String requestAPI(String text) {
+    	String URL = "https://api.api.ai/v1/query";
         String date = DateUtils.getTodayDate();
         String sessionId = UUID.randomUUID().toString();
         RestTemplate rt = new RestTemplate();
@@ -281,12 +282,10 @@ public class LineController {
         headers.set("Authorization", "Bearer 1ab5cef3becc432eb54a79bacf5f7d85");
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
         
-        UriComponentsBuilder uriComponents = UriComponentsBuilder.newInstance()
-                .scheme("https").host("api.api.ai")
-                .path("/v1").path("/query")
-                			.queryParam("v", date)
-                			.queryParam("query", text)
-                			.queryParam("sessionId", sessionId);
+        UriComponentsBuilder uriComponents = UriComponentsBuilder.fromUriString(URL)
+					                			.queryParam("v", date)
+					                			.queryParam("query", text)
+					                			.queryParam("sessionId", sessionId);
         
         log.info("Uri builder: ", uriComponents.build().toUri());
         
