@@ -251,28 +251,34 @@ public class LineController {
         String response = requestAPI(text);
         log.info("response from API: ", response);
 //        this.replyText(replyToken, text);
-
-        List<com.timx.reminderbot.Event> evt = eventRepository.findAll();
-        List<CarouselColumn> carouselList = new ArrayList<>();
-
-        for (com.timx.reminderbot.Event e : evt) {
-            CarouselColumn c = new CarouselColumn(e.getImgurls()[0], e.getTitle(), e.getAddress().getPlace(), Arrays.asList(
-                    new URIAction("More info", "https://line.me"),
-                    new URIAction("Add to reminder", "https://line.me")
-            ));
-            carouselList.add(c);
-        }
         
-        log.info("carouselList size: ", carouselList.size());
+        if(response.equals("query_event")) {
+        	List<com.timx.reminderbot.Event> evt = eventRepository.findAll();
+            List<CarouselColumn> carouselList = new ArrayList<>();
 
-        String imageUrl = createUri("/static/buttons/1040.jpg");
-        CarouselTemplate carouselTemplate = new CarouselTemplate(carouselList);
-        TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
-        this.reply(replyToken, templateMessage);
+            for (com.timx.reminderbot.Event e : evt) {
+                CarouselColumn c = new CarouselColumn(e.getImgurls()[0], e.getTitle(), e.getAddress().getPlace(), Arrays.asList(
+                        new URIAction("More info", "https://line.me"),
+                        new URIAction("Add to reminder", "https://line.me")
+                ));
+                carouselList.add(c);
+            }
+            
+            log.info("carouselList size: ", carouselList.size());
+
+            
+            CarouselTemplate carouselTemplate = new CarouselTemplate(carouselList);
+            TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
+            this.reply(replyToken, templateMessage);
+        } else {
+        	this.reply(replyToken, "intent unknown");
+        }
+
+        
 
     }
 
-    @RequestMapping(value = "/view", method = RequestMethod.GET)
+    
     public String requestAPI(String text) {
     	String URL = "https://api.api.ai/v1/query";
         String date = DateUtils.getTodayDate();
@@ -293,7 +299,7 @@ public class LineController {
         log.info("Uri builder: ", uriComponents.build().toString());
         
         ResponseEntity<ApiAiJSON> exchange = rt.exchange(uriComponents.build().toUri(), HttpMethod.GET, entity, ApiAiJSON.class);
-        return "OK : " + exchange.getBody().getResult().getMetadata().getIntentName();
+        return exchange.getBody().getResult().getMetadata().getIntentName();
     }
     
     private static String createUri(String path) {
