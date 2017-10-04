@@ -8,18 +8,13 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "msg_id",
-    "_text",
-    "entities"
-})
-public class WitAiPOJO {
+public class Message {
 
-    @JsonProperty("msg_id")
-    private String msgId;
-    @JsonProperty("_text")
-    private String text;
-    @JsonProperty("entities")
-    private Entities entities;
+    @JsonProperty("type")
+    private long type;
+    @JsonProperty("id")
+    private String id;
+    @JsonProperty("speech")
+    private String speech;
 
 }

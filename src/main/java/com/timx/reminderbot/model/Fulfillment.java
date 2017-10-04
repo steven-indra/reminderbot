@@ -9,18 +9,11 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "event",
-    "datetime",
-    "intent"
-})
-public class Entities {
+public class Fulfillment {
 
-    @JsonProperty("event")
-    private List<Event> event = null;
-    @JsonProperty("datetime")
-    private List<Datetime> datetime = null;
-    @JsonProperty("intent")
-    private List<Intent> intent = null;
+    @JsonProperty("speech")
+    private String speech;
+    @JsonProperty("messages")
+    private List<Message> messages = null;
 
 }

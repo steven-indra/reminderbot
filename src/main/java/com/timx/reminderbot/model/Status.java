@@ -8,18 +8,11 @@ import lombok.Data;
 
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonPropertyOrder({
-    "confidence",
-    "value",
-    "type"
-})
-public class Event {
+public class Status {
 
-    @JsonProperty("confidence")
-    private Double confidence;
-    @JsonProperty("value")
-    private String value;
-    @JsonProperty("type")
-    private String type;
+    @JsonProperty("code")
+    private long code;
+    @JsonProperty("errorType")
+    private String errorType;
 
 }

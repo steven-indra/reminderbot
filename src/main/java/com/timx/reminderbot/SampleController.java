@@ -6,8 +6,9 @@
 package com.timx.reminderbot;
 
 import com.sun.jndi.toolkit.url.Uri;
-import com.timx.reminderbot.model.WitAiPOJO;
+import com.timx.reminderbot.model.ApiAiJSON;
 import java.net.MalformedURLException;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,23 +32,26 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 @RequestMapping("/sample")
 public class SampleController {
-    
+
     @Autowired
     private IEventRepository personRepo;
-    
+
     @RequestMapping(value = "/view", method = RequestMethod.GET)
     public String view() {
-//        Pageable limit = new PageRequest(0,10);
+        String date = DateUtils.getTodayDate();
+        String sessionId = UUID.randomUUID().toString();
         RestTemplate rt = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer ETJQLX67SUQU4YE4XIBGH66NWZCTLDJU");
+        headers.set("Authorization", "Bearer 1ab5cef3becc432eb54a79bacf5f7d85");
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+        
+        // iki ven
         UriComponents uriComponents = UriComponentsBuilder.newInstance()
-                .scheme("https").host("api.wit.ai")
-                .path("/message").query("q={keyword}").buildAndExpand("show rock concerts in december");
-//        String url = "https://api.wit.ai/message?v=03/10/2017&q=show%20concerts%20in%20august";
-        ResponseEntity<WitAiPOJO> exchange = rt.exchange(uriComponents.toUri(), HttpMethod.GET, entity, WitAiPOJO.class);
-        return "OK : " + exchange.getBody().getEntities().getIntent().get(0).getValue();
+                .scheme("https").host("api.api.ai")
+                .path("/v1").path("/query").query("v={keyword}").buildAndExpand("show rock concerts in december");
+        
+        ResponseEntity<ApiAiJSON> exchange = rt.exchange(uriComponents.toUri(), HttpMethod.GET, entity, ApiAiJSON.class);
+        return "OK : " + exchange.getBody().getResult().getMetadata().getIntentName();
     }
-    
+
 }
