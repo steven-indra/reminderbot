@@ -282,12 +282,15 @@ public class LineController {
         headers.set("Authorization", "Bearer 1ab5cef3becc432eb54a79bacf5f7d85");
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
         
+        text = "remind to go to gym this afternoon";
+        
         UriComponentsBuilder uriComponents = UriComponentsBuilder.fromUriString(URL)
 					                			.queryParam("v", date)
 					                			.queryParam("query", text)
 					                			.queryParam("sessionId", sessionId);
         
         log.info("Uri builder: ", uriComponents.build().toUri());
+        log.info("Uri builder: ", uriComponents.build().toString());
         
         ResponseEntity<ApiAiJSON> exchange = rt.exchange(uriComponents.build().toUri(), HttpMethod.GET, entity, ApiAiJSON.class);
         return "OK : " + exchange.getBody().getResult().getMetadata().getIntentName();
