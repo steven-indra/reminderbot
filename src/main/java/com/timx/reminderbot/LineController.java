@@ -246,9 +246,9 @@ public class LineController {
             throws Exception {
         final String text = "Ini event terdekat yang ada";
 
-        log.info("Got text message from {}: {}", replyToken, text);
+        log.info("Got text message from {}: {}", replyToken, content.getText());
 
-        String response = requestAPI(text);
+        String response = requestAPI(content.getText());
         log.info("response from API: ", response);
 //        this.replyText(replyToken, text);
         
@@ -271,7 +271,7 @@ public class LineController {
             TemplateMessage templateMessage = new TemplateMessage("Carousel alt text", carouselTemplate);
             this.reply(replyToken, templateMessage);
         } else {
-        	this.reply(replyToken, "intent unknown");
+        	this.replyText(replyToken, "intent unknown");
         }
 
         
@@ -288,7 +288,7 @@ public class LineController {
         headers.set("Authorization", "Bearer 1ab5cef3becc432eb54a79bacf5f7d85");
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
         
-        text = "remind to go to gym this afternoon";
+//        text = "remind to go to gym this afternoon";
         
         UriComponentsBuilder uriComponents = UriComponentsBuilder.fromUriString(URL)
 					                			.queryParam("v", date)
