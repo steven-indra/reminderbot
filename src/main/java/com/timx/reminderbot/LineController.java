@@ -281,11 +281,19 @@ public class LineController {
         headers.set("Authorization", "Bearer 1ab5cef3becc432eb54a79bacf5f7d85");
         HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
         
-        UriComponents uriComponents = UriComponentsBuilder.newInstance()
+        // iki kan baru ada query, sessionIdnya belum ada dpt dari mana session id e bukane itu generate
+        // iku date sama sessionId ada di line 277 sama 28, cuma belum dimasukin uricomponent
+        // perlu apa ae? language, session id, query, timezone dpt dari mana? timezone sm lang gausah
+        UriComponentsBuilder uriComponents = UriComponentsBuilder.newInstance()
                 .scheme("https").host("api.api.ai")
-                .path("/v1").path("/query").query("v={keyword}").buildAndExpand(text);
+                .path("/v1").path("/query")
+                			.queryParam("v", date)
+                			.queryParam("query", text)
+                			.queryParam("sessionId", sessionId);
         
-        ResponseEntity<ApiAiJSON> exchange = rt.exchange(uriComponents.toUri(), HttpMethod.GET, entity, ApiAiJSON.class);
+        log.info("Uri builder: ", uriComponents.toUriString());
+        
+        ResponseEntity<ApiAiJSON> exchange = rt.exchange(uriComponents.toUriString(), HttpMethod.GET, entity, ApiAiJSON.class);
         return "OK : " + exchange.getBody().getResult().getMetadata().getIntentName();
     }
     
