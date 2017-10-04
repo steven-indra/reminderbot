@@ -21,7 +21,16 @@ import java.util.function.Consumer;
 import com.linecorp.bot.model.action.DatetimePickerAction;
 import com.linecorp.bot.model.message.template.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.google.common.io.ByteStreams;
 
@@ -64,6 +73,8 @@ import com.linecorp.bot.model.response.BotApiResponse;
 import com.linecorp.bot.spring.boot.annotation.EventMapping;
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import com.timx.reminderbot.SpringmongoApplication;
+import com.timx.reminderbot.model.ApiAiJSON;
+
 import java.util.ArrayList;
 
 import lombok.NonNull;
@@ -237,6 +248,8 @@ public class LineController {
 
         log.info("Got text message from {}: {}", replyToken, text);
 
+        String response = requestAPI(text);
+        log.info("response from API: ", response);
 //        this.replyText(replyToken, text);
 
         List<com.timx.reminderbot.Event> evt = eventRepository.findAll();
@@ -259,6 +272,23 @@ public class LineController {
 
     }
 
+    @RequestMapping(value = "/view", method = RequestMethod.GET)
+    public String requestAPI(String text) {
+        String date = DateUtils.getTodayDate();
+        String sessionId = UUID.randomUUID().toString();
+        RestTemplate rt = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer 1ab5cef3becc432eb54a79bacf5f7d85");
+        HttpEntity<String> entity = new HttpEntity<>("parameters", headers);
+        
+        UriComponents uriComponents = UriComponentsBuilder.newInstance()
+                .scheme("https").host("api.api.ai")
+                .path("/v1").path("/query").query("v={keyword}").buildAndExpand(text);
+        
+        ResponseEntity<ApiAiJSON> exchange = rt.exchange(uriComponents.toUri(), HttpMethod.GET, entity, ApiAiJSON.class);
+        return "OK : " + exchange.getBody().getResult().getMetadata().getIntentName();
+    }
+    
     private static String createUri(String path) {
         return ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(path).build()
